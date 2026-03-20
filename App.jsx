@@ -150,12 +150,10 @@ function App() {
             <h2 className="text-2xl font-bold">New Booking</h2>
             <input required placeholder="Exhibitor Name" className="w-full bg-slate-100 p-4 rounded-xl outline-none" onChange={e => setNewBooking({...newBooking, exhibitor: e.target.value})} />
             <input required placeholder="Stall Number" className="w-full bg-slate-100 p-4 rounded-xl outline-none" onChange={e => setNewBooking({...newBooking, stall: e.target.value})} />
-            <select className="w-full bg-slate-100 p-4 rounded-xl outline-none" onChange={e => setNewBooking({...newBooking, serviceId: e.target.value})}>
+            <select className="w-full bg-slate-100 p-4 rounded-xl outline-none" value={newBooking.serviceId} onChange={e => setNewBooking({...newBooking, serviceId: e.target.value})}>
               {ROBOT_SERVICES.map(s => <option key={s.id} value={s.id}>{s.name} ({s.duration} min)</option>)}
             </select>
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-500">EXPO DATE</label>
-              <select 
+            <select 
                 className="w-full bg-slate-100 p-4 rounded-xl outline-none" 
                 value={newBooking.date}
                 onChange={e => setNewBooking({...newBooking, date: e.target.value})}
@@ -164,7 +162,6 @@ function App() {
                 <option value="2026-03-29">March 29 (Day 2)</option>
                 <option value="2026-03-30">March 30 (Day 3)</option>
               </select>
-            </div>
             <input required type="time" className="w-full bg-slate-100 p-4 rounded-xl outline-none" onChange={e => setNewBooking({...newBooking, time: e.target.value})} />
             <textarea placeholder="Speech script for the G1..." className="w-full bg-slate-100 p-4 rounded-xl outline-none" rows="3" onChange={e => setNewBooking({...newBooking, customScript: e.target.value})} />
             <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
