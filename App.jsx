@@ -2,15 +2,15 @@ import React, { useState, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Bot, Zap, MessageSquare, User, CreditCard, Trash2, LayoutDashboard, Download, CheckCircle, TrendingUp, AlertCircle } from 'lucide-react';
 
-const MINUTE_RATE = 500;
+const MINUTE_RATE = 400;
 // PASTE YOUR CLOUDFLARE URL HERE
 const WORKER_URL = "https://g1-booking-api.manan-mongia.workers.dev"; 
 
 const ROBOT_SERVICES = [
-  { id: 'intro', name: 'Brand Introduction', duration: 5, description: 'Robot walks to your stall and gives a 2-minute pre-programmed speech.', icon: <MessageSquare />, basePrice: 2500 },
-  { id: 'dance', name: 'Dance Performance', duration: 10, description: 'A high-energy choreographed dance routine to attract crowds.', icon: <Zap />, basePrice: 5000 },
-  { id: 'fitness', name: 'Fitness Showcase', duration: 8, description: 'Robot performs squats, lunges, and push-ups.', icon: <TrendingUp />, basePrice: 4000 },
-  { id: 'selfie', name: 'Selfie Session', duration: 15, description: 'Robot strikes poses and interacts with visitors for photos.', icon: <User />, basePrice: 7500 }
+  { id: 'intro', name: 'Brand Introduction', duration: 5, description: 'Robot walks to your stall and gives a 2-minute pre-programmed speech.', icon: <MessageSquare />, basePrice: 1999 },
+  { id: 'dance', name: 'Dance Performance', duration: 10, description: 'A high-energy choreographed dance routine to attract crowds.', icon: <Zap />, basePrice: 3999 },
+  { id: 'fitness', name: 'Fitness Showcase', duration: 8, description: 'Robot performs squats, lunges, and push-ups.', icon: <TrendingUp />, basePrice: 3199 },
+  { id: 'selfie', name: 'Selfie Session', duration: 15, description: 'Robot strikes poses and interacts with visitors for photos.', icon: <User />, basePrice: 5999 }
 ];
 
 function App() {
@@ -26,8 +26,13 @@ function App() {
     message: '' 
   });
   const selectedService = useMemo(() => ROBOT_SERVICES.find(s => s.id === newBooking.serviceId), [newBooking.serviceId]);
-  const totalCost = selectedService ? selectedService.duration * MINUTE_RATE : 0;
+  const totalCost = selectedService ? selectedService.basePrice : 0;
 
+  const handleServiceClick = (serviceId) => {
+    setNewBooking(prev => ({ ...prev, serviceId: serviceId }));
+    setIsBookingModalOpen(true);
+  };
+  
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -93,20 +98,31 @@ function App() {
         {view === 'exhibitor' ? (
           <div className="space-y-8">
             <header className="text-center space-y-4">
+              <div className="inline-block bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Official Robot Partner</div>
               <h1 className="text-4xl font-black md:text-6xl">Hire the <span className="text-blue-600">Unitree G1</span></h1>
               <p className="text-slate-500 text-lg max-w-2xl mx-auto">Make your stall the main attraction at the National Printing Expo.</p>
-              <div className="inline-block bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold">₹{MINUTE_RATE} / minute</div>
+              <p className="text-slate-500 text-lg max-w-2xl mx-auto">Select a service below to bring the world's most advanced humanoid to your stall.</p>
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {ROBOT_SERVICES.map(s => (
-                <div key={s.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-blue-500 transition-all">
-                  <div className="text-blue-600 mb-4 scale-150 origin-left ml-2">{s.icon}</div>
-                  <h3 className="font-bold text-lg">{s.name}</h3>
+                <div 
+                  key={s.id} 
+                  onClick={() => handleServiceClick(s.id)} // Opens modal & selects service
+                  className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-blue-500 hover:shadow-md transition-all cursor-pointer group"
+                >
+                  <div className="text-blue-600 mb-4 scale-150 origin-left ml-2 group-hover:scale-[1.6] transition-transform">{s.icon}</div>
+                  <h3 className="font-bold text-lg group-hover:text-blue-600 transition-colors">{s.name}</h3>
                   <p className="text-sm text-slate-500 mb-4">{s.description}</p>
                   <div className="flex justify-between items-end border-t pt-4">
-                    <span className="text-xs font-bold text-slate-400 uppercase">{s.duration} Mins</span>
-                    <span className="font-bold text-blue-600">₹{s.duration * MINUTE_RATE}</span>
+                    <div>
+                      <span className="text-xs font-bold text-slate-400 uppercase block">Duration</span>
+                      <span className="font-semibold">{s.duration} Mins</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs font-bold text-slate-400 uppercase block">Package Cost</span>
+                      <span className="font-bold text-blue-600">₹{s.basePrice}</span>
+                    </div>
                   </div>
                 </div>
               ))}
