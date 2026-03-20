@@ -88,9 +88,6 @@ function App() {
             <Bot className="text-blue-600 w-8 h-8" />
             <span className="font-bold text-xl">G1 Expo Services</span>
           </div>
-          <button onClick={() => setView(view === 'exhibitor' ? 'admin' : 'exhibitor')} className="text-sm font-medium text-blue-600 bg-blue-50 px-4 py-2 rounded-lg">
-            {view === 'exhibitor' ? 'Admin Dashboard' : 'Back to Booking'}
-          </button>
         </div>
       </nav>
 
