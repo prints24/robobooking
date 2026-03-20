@@ -19,6 +19,12 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [newBooking, setNewBooking] = useState({ exhibitor: '', stall: '', serviceId: 'intro', date: '2026-03-28', time: '', customScript: '' });
 
+  const [feedback, setFeedback] = useState({ 
+    isOpen: false, 
+    type: 'success', // 'success', 'error', or 'conflict'
+    title: '', 
+    message: '' 
+  });
   const selectedService = useMemo(() => ROBOT_SERVICES.find(s => s.id === newBooking.serviceId), [newBooking.serviceId]);
   const totalCost = selectedService ? selectedService.duration * MINUTE_RATE : 0;
 
@@ -36,14 +42,33 @@ function App() {
           cost: totalCost
         })
       });
+
       if (response.status === 409) {
-        alert("⚠️ This time slot is already booked for the Unitree G1. Please choose another time.");
+        setFeedback({
+          isOpen: true,
+          type: 'conflict',
+          title: 'Slot Unavailable',
+          message: 'The Unitree G1 is already booked for this specific date and time. Please pick another slot!'
+        });
       } else if (response.ok) {
-        alert("✅ Booking Successful! See you at the Expo.");
+        setFeedback({
+          isOpen: true,
+          type: 'success',
+          title: 'Booking Confirmed!',
+          message: `We have reserved the G1 for ${newBooking.exhibitor} at Stall ${newBooking.stall}. See you on March ${newBooking.date.split('-')[2]}!`
+        });
         setIsBookingModalOpen(false);
+        setNewBooking({ exhibitor: '', stall: '', serviceId: 'intro', date: '2026-03-28', time: '', customScript: '' });
+      } else {
+        throw new Error("Server Error");
       }
     } catch (err) {
-      alert("Error saving booking. Check your Cloudflare Worker.");
+      setFeedback({
+        isOpen: true,
+        type: 'error',
+        title: 'Connection Failed',
+        message: 'We could not reach the booking server. Please check your internet or try again.'
+      });
     } finally {
       setLoading(false);
     }
@@ -134,6 +159,34 @@ function App() {
             </div>
             <button type="button" onClick={() => setIsBookingModalOpen(false)} className="w-full text-slate-400 text-sm">Cancel</button>
           </form>
+        </div>
+      )}
+      {/* Feedback Modal */}
+      {feedback.isOpen && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl scale-in-center border border-slate-100">
+            <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 ${
+              feedback.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 
+              feedback.type === 'conflict' ? 'bg-amber-100 text-amber-600' : 'bg-red-100 text-red-600'
+            }`}>
+              {feedback.type === 'success' && <CheckCircle className="w-12 h-12" />}
+              {feedback.type === 'conflict' && <AlertCircle className="w-12 h-12" />}
+              {feedback.type === 'error' && <Trash2 className="w-12 h-12" />}
+            </div>
+            
+            <h2 className="text-2xl font-black mb-2 text-slate-800">{feedback.title}</h2>
+            <p className="text-slate-500 mb-8 leading-relaxed">{feedback.message}</p>
+            
+            <button 
+              onClick={() => setFeedback({ ...feedback, isOpen: false })}
+              className={`w-full py-4 rounded-2xl font-bold text-white shadow-lg transition-transform active:scale-95 ${
+                feedback.type === 'success' ? 'bg-emerald-500 shadow-emerald-200' : 
+                feedback.type === 'conflict' ? 'bg-amber-500 shadow-amber-200' : 'bg-red-500 shadow-red-200'
+              }`}
+            >
+              Dismiss
+            </button>
+          </div>
         </div>
       )}
     </div>
