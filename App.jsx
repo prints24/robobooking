@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Bot, Zap, MessageSquare, User, CreditCard, Trash2, LayoutDashboard, Download, CheckCircle, TrendingUp } from 'lucide-react';
+import { Bot, Zap, MessageSquare, User, CreditCard, Trash2, LayoutDashboard, Download, CheckCircle, TrendingUp, AlertCircle } from 'lucide-react';
 
 const MINUTE_RATE = 500;
 // PASTE YOUR CLOUDFLARE URL HERE
