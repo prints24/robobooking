@@ -25,8 +25,34 @@ function App() {
     title: '', 
     message: '' 
   });
+
+  const [existingBookings, setExistingBookings] = useState([]);
+  // Fetch bookings on load
+  useEffect(() => {
+    fetch("YOUR_APPS_SCRIPT_URL")
+      .then(res => res.json())
+      .then(data => setExistingBookings(data));
+  }, []);
+
   const selectedService = useMemo(() => ROBOT_SERVICES.find(s => s.id === newBooking.serviceId), [newBooking.serviceId]);
   const totalCost = selectedService ? selectedService.basePrice : 0;
+
+  const isTimeSlotBlocked = (date, time, duration) => {
+    const [h, m] = time.split(':').map(Number);
+    const newStart = h * 60 + m;
+    const newEnd = newStart + parseInt(duration) + 5; // Total busy time
+
+    return existingBookings.some(booking => {
+      if (booking.date !== date) return false;
+
+      const [exH, exM] = booking.time.split(':').map(Number);
+      const exStart = exH * 60 + exM;
+      const exEnd = exStart + parseInt(booking.duration) + 5;
+
+      // The Overlap Logic
+      return (newStart < exEnd) && (newEnd > exStart);
+    });
+  };
 
   const handleServiceClick = (serviceId) => {
     setNewBooking(prev => ({ ...prev, serviceId: serviceId }));
@@ -176,11 +202,13 @@ function App() {
                 <option value="2026-03-29">March 29 (Day 2)</option>
                 <option value="2026-03-30">March 30 (Day 3)</option>
               </select>
-            <input required type="time" className="w-full bg-slate-100 p-4 rounded-xl outline-none" onChange={e => setNewBooking({...newBooking, time: e.target.value})} />
+            <input required type="time" className={`w-full p-4 rounded-xl outline-none ${isTimeSlotBlocked(newBooking.date, newBooking.time, selectedService.duration) ? 'bg-red-50 border-2 border-red-200' : 'bg-slate-100'}`} value={newBooking.time} onChange={e => setNewBooking({...newBooking, time: e.target.value})} />
+            {/* Show warning message if blocked */}
+            {newBooking.time && isTimeSlotBlocked(newBooking.date, newBooking.time, selectedService.duration) && (<p className="text-red-500 text-xs font-bold mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> This slot is overlapping with another booking.</p>)}
             <textarea placeholder="Speech script for the G1..." className="w-full bg-slate-100 p-4 rounded-xl outline-none" rows="3" onChange={e => setNewBooking({...newBooking, customScript: e.target.value})} />
             <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
               <span className="font-bold text-blue-600">Total: ₹{totalCost}</span>
-              <button type="submit" disabled={loading} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold">
+              <button type="submit" disabled={loading || isTimeSlotBlocked(newBooking.date, newBooking.time, selectedService.duration)} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold">
                 {loading ? "Saving..." : "Confirm"}
               </button>
             </div>
