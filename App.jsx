@@ -66,14 +66,14 @@ function App() {
     const selectedTimeInMinutes = hours * 60 + minutes;
     
     const openingTime = 10 * 60; // 10:00 AM
-    const closingTime = 18 * 0;  // 6:00 PM (18:00)
+    const closingTime = 18 * 60;  // 6:00 PM (18:00)
 
     if (selectedTimeInMinutes < openingTime || selectedTimeInMinutes > closingTime) {
       setFeedback({
         isOpen: true,
         type: 'error',
         title: 'Outside Operating Hours',
-        message: 'The G1 Robot is only available for bookings between 10:00 AM and 6:00 PM.'+'(Select: '+selectedTimeInMinutes+' | Open: '+openingTime+' | Close: '+closingTime
+        message: 'The G1 Robot is only available for bookings between 10:00 AM and 6:00 PM.'
       });
       return; // Stop the function here
     }
