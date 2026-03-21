@@ -176,7 +176,7 @@ function App() {
                 <option value="2026-03-29">March 29 (Day 2)</option>
                 <option value="2026-03-30">March 30 (Day 3)</option>
               </select>
-            <input required type="time" min="10:00" max="18:00" className="w-full bg-slate-100 p-4 rounded-xl outline-none" onChange={e => setNewBooking({...newBooking, time: e.target.value})} />
+            <input required type="time" className="w-full bg-slate-100 p-4 rounded-xl outline-none" onChange={e => setNewBooking({...newBooking, time: e.target.value})} />
             <textarea placeholder="Speech script for the G1..." className="w-full bg-slate-100 p-4 rounded-xl outline-none" rows="3" onChange={e => setNewBooking({...newBooking, customScript: e.target.value})} />
             <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
               <span className="font-bold text-blue-600">Total: ₹{totalCost}</span>
