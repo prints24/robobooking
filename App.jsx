@@ -61,7 +61,7 @@ function App() {
     const openingTime = 10 * 60; // 10:00 AM
     const closingTime = 18 * 60;  // 6:00 PM (18:00)
 
-    return (newStart < openingTime) && (newEnd > closingTime);
+    return (newStart < openingTime) || (newEnd > closingTime);
   };
 
   const handleServiceClick = (serviceId) => {
