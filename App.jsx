@@ -29,7 +29,7 @@ function App() {
   const [existingBookings, setExistingBookings] = useState([]);
   // Fetch bookings on load
   useEffect(() => {
-    fetch("YOUR_APPS_SCRIPT_URL")
+    fetch("https://script.google.com/macros/s/AKfycbxRw0Jon2BJ0kt8jG80Ner8MNqtpMSbKxpUHst5EZDuwzHr-m3klYYaohh0SWtJ1c7F/exec")
       .then(res => res.json())
       .then(data => setExistingBookings(data));
   }, []);
