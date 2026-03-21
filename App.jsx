@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Bot, Zap, MessageSquare, User, CreditCard, Trash2, LayoutDashboard, Download, CheckCircle, TrendingUp, AlertCircle } from 'lucide-react';
 
