@@ -73,7 +73,7 @@ function App() {
         isOpen: true,
         type: 'error',
         title: 'Outside Operating Hours',
-        message: 'The G1 Robot is only available for bookings between 10:00 AM and 6:00 PM.'
+        message: 'The G1 Robot is only available for bookings between 10:00 AM and 6:00 PM.'+'(Select: '+selectedTimeInMinutes+' | Open: '+openingTime+' | Close: '+closingTime
       });
       return; // Stop the function here
     }
