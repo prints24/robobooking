@@ -54,6 +54,16 @@ function App() {
     });
   };
 
+  const isTimeSlotOprational = (time, duration) => {
+    const [h, m] = time.split(':').map(Number);
+    const newStart = h * 60 + m;
+    const newEnd = newStart + parseInt(duration) + 5; // Total busy time
+    const openingTime = 10 * 60; // 10:00 AM
+    const closingTime = 18 * 60;  // 6:00 PM (18:00)
+
+    return (newStart >= openingTime) && (newEnd <= closingTime);
+  };
+
   const handleServiceClick = (serviceId) => {
     setNewBooking(prev => ({ ...prev, serviceId: serviceId }));
     setIsBookingModalOpen(true);
@@ -205,6 +215,8 @@ function App() {
             <input required type="time" className={`w-full p-4 rounded-xl outline-none ${isTimeSlotBlocked(newBooking.date, newBooking.time, selectedService.duration) ? 'bg-red-50 border-2 border-red-200' : 'bg-slate-100'}`} value={newBooking.time} onChange={e => setNewBooking({...newBooking, time: e.target.value})} />
             {/* Show warning message if blocked */}
             {newBooking.time && isTimeSlotBlocked(newBooking.date, newBooking.time, selectedService.duration) && (<p className="text-red-500 text-xs font-bold mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> This slot is overlapping with another booking.</p>)}
+            {/* Show warning message if blocked */}
+            {newBooking.time && isTimeSlotOprational(newBooking.time, selectedService.duration) && (<p className="text-red-500 text-xs font-bold mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> This slot is Outside of Operating Hours (10:00 AM to 06:00 PM).</p>)}
             <textarea placeholder="Speech script for the G1..." className="w-full bg-slate-100 p-4 rounded-xl outline-none" rows="3" onChange={e => setNewBooking({...newBooking, customScript: e.target.value})} />
             <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
               <span className="font-bold text-blue-600">Total: ₹{totalCost}</span>
